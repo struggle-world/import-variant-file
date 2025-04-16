@@ -14,13 +14,56 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	const disposable = vscode.commands.registerCommand('import-variant-file.helloWorld', () => {
+		const editor = vscode.window.activeTextEditor;
+		if (editor) {
+			const workspaceFolder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
+			if (workspaceFolder) {
+				vscode.window.showInformationMessage(`当前文档所在项目路径：${workspaceFolder.uri.fsPath}`);
+				console.log(`当前文档所在项目路径：${workspaceFolder.uri.fsPath}`);
+				// 获取当前的项目的不同配置，根据配置获取alias
+				// 查询并维护一个表格来处理当前文件夹下的所有导出变量、文件、node_modules导出变量等
+				// 调用插件来匹配变量名称以及文件名称，再选择导出的文件结合alias以及当前打开的文件来进行插入。
+				// 这里可以使用vscode.workspace.fs来获取文件夹下的所有文件。
+				// 通过tsx来解析import语句进行插入当前文件
+				// vscode.workspace.fs.readDirectory(workspaceFolder.uri).then(files => {
+				// 	files.forEach(file => {
+				// 		console.log(file);
+				// 	});
+				// });
+				// vscode.workspace.fs.readFile(workspaceFolder.uri).then(file => {
+				// 	console.log(file);
+				// });		
+				// vscode.workspace.fs.stat(workspaceFolder.uri).then(file => {
+				// 	console.log(file);
+				// });
+				// vscode.workspace.fs.createFile(workspaceFolder.uri).then(file => {
+				// 	console.log(file);
+				// });
+				// vscode.workspace.fs.delete(workspaceFolder.uri).then(file => {
+				// 	console.log(file);
+				// });
+				// vscode.workspace.fs.rename(workspaceFolder.uri).then(file => {
+				// 	console.log(file);
+				// });
+				// vscode.workspace.fs.writeFile(workspaceFolder.uri).then(file => {
+				// 	console.log(file);
+				// });
+				// vscode.workspace.fs.copy(workspaceFolder.uri).then(file => {
+				// 	console.log(file);		
+				// });
+			} else {
+				vscode.window.showInformationMessage('未能确定当前文档的工作区。');
+			}
+		} else {
+			vscode.window.showInformationMessage('没有激活的编辑器。');
+		}
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from import-variant-file!');
+		vscode.window.showInformationMessage(`Hello World from ${editor} import-variant-file!`)
 	});
 
 	context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
