@@ -29,7 +29,8 @@ async function main() {
 			'src/extension.ts'
 		],
 		bundle: true,
-		format: 'cjs',
+		// format: 'cjs',
+		format: 'esm',
 		minify: production,
 		sourcemap: !production,
 		sourcesContent: false,
