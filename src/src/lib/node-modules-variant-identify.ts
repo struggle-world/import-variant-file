@@ -1,4 +1,4 @@
-import { promises } from 'node:fs';
+import fs, { promises } from 'node:fs';
 import path from 'path';
 import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
@@ -96,5 +96,36 @@ export async function findExports(packagePath: any) {
     } catch (error: any) {
         console.error(`Error processing ${packagePath}: ${error?.message}`);
         return;
+    }
+}
+
+// 根据路径，使用迭代的方式来获取当前文件夹下所有的package.json地址
+export async function getPackageJsonFiles(dir: string) {
+    const files = await promises.readdir(dir);
+    const packageJsonFiles: string[] = [];
+    for (const file of files) {
+        const filePath = path.join(dir, file);
+        const stat = await promises.stat(filePath);
+
+        if (stat.isDirectory()) {
+            // 递归查找子目录
+            const subPackageJsonFiles = await getPackageJsonFiles(filePath);
+            packageJsonFiles.push(...subPackageJsonFiles);
+        } else if (file === 'package.json') {
+            packageJsonFiles.push(filePath);
+        }
+    }
+    return packageJsonFiles;
+}
+
+// 判断文件是否存在
+export async function checkFile(path: string) {
+    try {
+        if (await fs.existsSync(path)) {
+            return true;
+        }
+        return false;
+    } catch (error) {
+        return false;
     }
 }
